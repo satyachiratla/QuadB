@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+
+import MoviesList from "./components/NamesList";
+import "./App.css";
 
 function App() {
+  const [names, setNames] = useState([]);
+
+  async function fetchNameHanler() {
+     const response = await fetch("https://api.tvmaze.com/search/shows?q=all")
+      const data = await response.json()
+        console.log(data)
+        const transformedNames = data.map((nameData) => {
+          return {
+            id: nameData.show.id,
+            title: nameData.show.name,
+            summary: nameData.show.summary,
+        };
+        });
+        setNames(transformedNames)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <section>
+        <button onClick={fetchNameHanler}>Show Names</button>
+      </section>
+      <section>
+        <MoviesList names={names} />
+      </section>
+    </React.Fragment>
   );
 }
 
